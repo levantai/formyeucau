@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Form Yêu Cầu Dịch Vụ - Bootstrap</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .form-container {
+        max-width: 650px;
+        margin: 50px auto;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="form-container">
+        <h2 class="mb-4 text-center text-info">📝 Form Yêu Cầu Dịch Vụ</h2>
+
+        <form id="requestForm">
+          <div class="mb-3">
+            <label for="Ngay" class="form-label fw-bold">Ngày yêu cầu:</label>
+            <input
+              type="date"
+              class="form-control"
+              id="Ngay"
+              name="Ngày"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="NoiDung" class="form-label fw-bold"
+              >Nội dung yêu cầu chi tiết:</label
+            >
+            <textarea
+              class="form-control"
+              id="NoiDung"
+              name="Nội dung"
+              rows="4"
+              required
+            ></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label for="HoVaTen" class="form-label fw-bold"
+              >Họ và tên người yêu cầu:</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="HoVaTen"
+              name="Họ và tên"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="NoiYeuCau" class="form-label fw-bold"
+              >Phòng ban/Nơi yêu cầu:</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="NoiYeuCau"
+              name="Nơi yêu cầu"
+              required
+            />
+          </div>
+
+          <input type="hidden" name="Tình trạng" value="Chưa xử lý" />
+
+          <div class="mb-4">
+            <label for="GhiChu" class="form-label fw-bold"
+              >Ghi chú (nếu có):</label
+            >
+            <textarea
+              class="form-control"
+              id="GhiChu"
+              name="Ghi chú"
+              rows="2"
+            ></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg w-100">
+            Gửi Yêu Cầu
+          </button>
+
+          <p
+            class="message mt-3 text-center"
+            id="formMessage"
+            style="display: none"
+          ></p>
+        </form>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      const form = document.getElementById("requestForm");
+      const message = document.getElementById("formMessage");
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        // ***************************************************************
+        // VUI LÒNG CẬP NHẬT URL NÀY BẰNG URL Google Apps Script ĐÃ TRIỂN KHAI CỦA BẠN
+        const scriptUrl =
+          "https://script.google.com/macros/s/AKfycbyFnJP_K0G8Z7eh2CljfljgzfXRzSZUB1uUTujXFwa14r2V-TSkbgSizon4rzsAkZCV/exec";
+        // ***************************************************************
+
+        // Lấy dữ liệu từ form
+        let dataToSubmit = new FormData(form);
+
+        // Gửi dữ liệu bằng Fetch API
+        fetch(scriptUrl, {
+          method: "POST",
+          mode: "no-cors",
+          cache: "no-cache",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: new URLSearchParams(dataToSubmit),
+        })
+          .then(() => {
+            // Xử lý thành công
+            message.textContent = "✅ Yêu cầu đã được gửi thành công!";
+            message.classList.remove("text-danger");
+            message.classList.add("text-success");
+            message.style.display = "block";
+            form.reset();
+
+            setTimeout(() => {
+              message.style.display = "none";
+            }, 5000);
+          })
+          .catch((error) => {
+            console.error("Lỗi khi gửi dữ liệu:", error);
+            message.textContent = "❌ Đã xảy ra lỗi khi gửi. Vui lòng thử lại.";
+            message.classList.remove("text-success");
+            message.classList.add("text-danger");
+            message.style.display = "block";
+          });
+      });
+    </script>
+  </body>
+</html>
