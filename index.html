@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Form Yêu Cầu Dịch Vụ - Bootstrap</title>
+    <title>Form Yêu Cầu Dịch Vụ - Cập Nhật</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -37,15 +37,44 @@
           </div>
 
           <div class="mb-3">
-            <label for="NoiDung" class="form-label fw-bold"
-              >Nội dung yêu cầu chi tiết:</label
+            <label for="NoiDungSelect" class="form-label fw-bold"
+              >Nội dung yêu cầu:</label
+            >
+            <select
+              class="form-select"
+              id="NoiDungSelect"
+              name="NoiDungSelect"
+              required
+              onchange="toggleOtherContent(this.value)"
+            >
+              <option value="">-- Chọn nội dung yêu cầu --</option>
+              <option value="Thay mực in">Thay mực in</option>
+              <option value="Máy in hư">Máy in hư</option>
+              <option value="Máy tính hư">Máy tính hư</option>
+              <option value="office - win lỗi">Office - Win lỗi</option>
+              <option value="Khác...">Khác...</option>
+            </select>
+
+            <input
+              type="text"
+              class="form-control mt-2"
+              id="NoiDungKhac"
+              name="NoiDungKhac"
+              placeholder="Nhập nội dung yêu cầu khác..."
+              style="display: none"
+              disabled
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="NoiDungMoTa" class="form-label fw-bold"
+              >Mô tả chi tiết (nếu cần):</label
             >
             <textarea
               class="form-control"
-              id="NoiDung"
-              name="Nội dung"
-              rows="4"
-              required
+              id="NoiDungMoTa"
+              name="Mô tả chi tiết"
+              rows="2"
             ></textarea>
           </div>
 
@@ -66,21 +95,24 @@
             <label for="NoiYeuCau" class="form-label fw-bold"
               >Phòng ban/Nơi yêu cầu:</label
             >
-            <input
-              type="text"
-              class="form-control"
+            <select
+              class="form-select"
               id="NoiYeuCau"
               name="Nơi yêu cầu"
               required
-            />
+            >
+              <option value="">-- Chọn phòng ban --</option>
+              <option value="TYTP Bình Thới">TYTP Bình Thới</option>
+              <option value="TYTP Phú Thọ">TYTP Phú Thọ</option>
+              <option value="TYTP Hòa Bình">TYTP Hòa Bình</option>
+              <option value="TYTP Minh Phụng">TYTP Minh Phụng</option>
+            </select>
           </div>
 
           <input type="hidden" name="Tình trạng" value="Chưa xử lý" />
 
           <div class="mb-4">
-            <label for="GhiChu" class="form-label fw-bold"
-              >Ghi chú (nếu có):</label
-            >
+            <label for="GhiChu" class="form-label fw-bold">Ghi chú:</label>
             <textarea
               class="form-control"
               id="GhiChu"
@@ -105,6 +137,24 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+      // Hàm hiển thị/ẩn input "Nội dung Khác"
+      function toggleOtherContent(selectedValue) {
+        const otherContentInput = document.getElementById("NoiDungKhac");
+        const mainSelect = document.getElementById("NoiDungSelect");
+
+        if (selectedValue === "Khác...") {
+          otherContentInput.style.display = "block";
+          otherContentInput.disabled = false;
+          otherContentInput.required = true;
+          mainSelect.required = false;
+        } else {
+          otherContentInput.style.display = "none";
+          otherContentInput.disabled = true;
+          otherContentInput.required = false;
+          mainSelect.required = true;
+        }
+      }
+
       const form = document.getElementById("requestForm");
       const message = document.getElementById("formMessage");
 
@@ -117,10 +167,35 @@
           "https://script.google.com/macros/s/AKfycbyFnJP_K0G8Z7eh2CljfljgzfXRzSZUB1uUTujXFwa14r2V-TSkbgSizon4rzsAkZCV/exec";
         // ***************************************************************
 
-        // Lấy dữ liệu từ form
+        // 1. Lấy dữ liệu thô
         let dataToSubmit = new FormData(form);
 
-        // Gửi dữ liệu bằng Fetch API
+        // 2. Xử lý trường 'Nội dung' để chỉ gửi một giá trị duy nhất
+        const selectedNoiDung = document.getElementById("NoiDungSelect").value;
+        const otherNoiDung = document.getElementById("NoiDungKhac").value;
+        const moTaChiTiet = dataToSubmit.get("Mô tả chi tiết");
+
+        let finalNoiDungValue = selectedNoiDung;
+
+        if (selectedNoiDung === "Khác...") {
+          finalNoiDungValue = otherNoiDung;
+        }
+
+        // Gộp Nội dung chính và mô tả chi tiết (nếu có)
+        if (moTaChiTiet) {
+          finalNoiDungValue = finalNoiDungValue + " (" + moTaChiTiet + ")";
+        }
+
+        // 3. Tạo Payload cuối cùng để gửi đi
+        const payload = new FormData();
+        payload.append("Ngày", dataToSubmit.get("Ngày"));
+        payload.append("Nội dung", finalNoiDungValue); // Gửi giá trị đã xử lý/ghép
+        payload.append("Họ và tên", dataToSubmit.get("Họ và tên"));
+        payload.append("Nơi yêu cầu", dataToSubmit.get("Nơi yêu cầu"));
+        payload.append("Tình trạng", dataToSubmit.get("Tình trạng"));
+        payload.append("Ghi chú", dataToSubmit.get("Ghi chú"));
+
+        // 4. Gửi dữ liệu bằng Fetch API
         fetch(scriptUrl, {
           method: "POST",
           mode: "no-cors",
@@ -128,7 +203,7 @@
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
           },
-          body: new URLSearchParams(dataToSubmit),
+          body: new URLSearchParams(payload),
         })
           .then(() => {
             // Xử lý thành công
@@ -137,6 +212,9 @@
             message.classList.add("text-success");
             message.style.display = "block";
             form.reset();
+
+            document.getElementById("NoiDungSelect").required = true;
+            toggleOtherContent("");
 
             setTimeout(() => {
               message.style.display = "none";
