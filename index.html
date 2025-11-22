@@ -206,8 +206,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-        <script>
+<script>
       // Hàm hiển thị/ẩn input "Nội dung Khác"
       function toggleOtherContent(selectedValue) {
         const otherContentInput = document.getElementById("NoiDungKhac");
@@ -229,7 +228,7 @@
       const form = document.getElementById("requestForm");
       const message = document.getElementById("formMessage");
       
-      // Khởi tạo Modal sử dụng class (đảm bảo Bootstrap đã load)
+      // Khởi tạo Modal sử dụng class
       const successModal = new bootstrap.Modal(
         document.getElementById("successModal")
       );
@@ -240,51 +239,70 @@
       form.addEventListener("submit", function (e) {
         e.preventDefault();
 
-        // 🔥 THAY THẾ CHỖ NÀY BẰNG URL WEB APP CHÍNH THỨC CỦA BẠN 
-        const scriptUrl = "https://script.google.com/macros/s/AKfycbw1YzSf74s3JE 0q4aMF2uKzXMmCSS1kyFdj49Yzvtfqi3 -Rvhv1LpxyJezwev0FbRb1pQ/exec"; 
+        // 🔥 BƯỚC 1: Đảm bảo URL API chính xác
+        // VUI LÒNG THAY THẾ CHỖ NÀY BẰNG URL WEB APP CHÍNH THỨC CỦA BẠN (Đã triển khai doPost)
+        const scriptUrl = "YOUR_WEB_APP_URL"; 
+        
+        // Kiểm tra xem URL đã được thay thế chưa
+        if (scriptUrl === "YOUR_WEB_APP_URL") {
+             alert("LỖI: Bạn chưa thay thế YOUR_WEB_APP_URL bằng URL Apps Script của mình!");
+             return;
+        }
 
+
+        // Lấy dữ liệu từ form
         let dataToSubmit = new FormData(form);
 
-        // 🔥 BƯỚC SỬA LỖI: Lấy giá trị tên trực tiếp từ FormData, đảm bảo tính nhất quán
+        // Lấy giá trị tên trực tiếp từ FormData
         const hoVaTenInput = dataToSubmit.get("Họ và tên"); 
 
         const selectedNoiDung = document.getElementById("NoiDungSelect").value;
         const otherNoiDung = document.getElementById("NoiDungKhac").value;
-        const moTaChiTiet = dataToSubmit.get("Mô tả chi tiết");
+        const moTaChiTiet = dataToSubmit.get("Mô tả chi tiết") || ""; // Gán mặc định là chuỗi rỗng
 
         let finalNoiDungValue = selectedNoiDung;
-
+        
+        // 🔥 BƯỚC 2: Xử lý nội dung yêu cầu
         if (selectedNoiDung === "Khác...") {
           finalNoiDungValue = otherNoiDung;
         }
-
         if (moTaChiTiet) {
           finalNoiDungValue = finalNoiDungValue + " (" + moTaChiTiet + ")";
         }
+        // Đảm bảo nội dung cuối cùng không rỗng
+        if (!finalNoiDungValue || finalNoiDungValue.trim() === "") {
+             finalNoiDungValue = "Không có nội dung chính";
+        }
+
 
         // Tạo Payload cuối cùng để gửi đi
-        const payload = new FormData();
+        const payload = new URLSearchParams(); // Sử dụng URLSearchParams để gửi POST đúng định dạng
         payload.append("Ngày", dataToSubmit.get("Ngày"));
         payload.append("Nội dung", finalNoiDungValue); 
         payload.append("Họ và tên", hoVaTenInput);
         payload.append("Nơi yêu cầu", dataToSubmit.get("Nơi yêu cầu"));
         payload.append("Tình trạng", dataToSubmit.get("Tình trạng")); 
         payload.append("Ghi chú", dataToSubmit.get("Ghi chú"));
+        
+        
+        // 🔥 BƯỚC 3: Xử lý Fetch
+        // Ẩn nút gửi để tránh double click
+        document.querySelector('button[type="submit"]').disabled = true;
 
-        // Gửi dữ liệu bằng Fetch API
         fetch(scriptUrl, {
           method: "POST",
-          mode: "no-cors",
+          // mode: "no-cors" là quan trọng khi gửi đến GAS
+          mode: "no-cors", 
           cache: "no-cache",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
           },
-          body: new URLSearchParams(payload),
+          body: payload, // Truyền trực tiếp đối tượng URLSearchParams
         })
           .then(() => {
             // Xử lý thành công
             
-            // 🔥 BƯỚC CHÈN DỮ LIỆU: Đảm bảo chỉ chèn tên nếu tên tồn tại
+            // Chèn họ và tên vào modal
             if (hoVaTenInput && hoVaTenInput.trim() !== "") {
                 requesterNameSpan.textContent = hoVaTenInput;
             } else {
@@ -298,13 +316,20 @@
           })
           .catch((error) => {
             console.error("Lỗi khi gửi dữ liệu:", error);
-            message.textContent = "❌ Đã xảy ra lỗi khi gửi. Vui lòng thử lại.";
+            message.textContent = "❌ Đã xảy ra lỗi khi gửi. Vui lòng kiểm tra Console (F12) để biết chi tiết.";
             message.classList.remove("text-success");
             message.classList.add("text-danger");
             message.style.display = "block";
+          })
+          .finally(() => {
+             // Hiển thị lại nút gửi
+             document.querySelector('button[type="submit"]').disabled = false;
           });
       });
     </script>
+        
+    
 
   </body>
 </html>
+
