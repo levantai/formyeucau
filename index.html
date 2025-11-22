@@ -132,7 +132,7 @@
             </select>
           </div>
 
-          <input type="hidden" name="Tình trạng" value="Chưa xử lý" />
+          <input type="hidden" name="Tình trạng" value="Đang xử lý" />
 
           <div class="mb-4">
             <label for="GhiChu" class="form-label fw-bold">Ghi chú:</label>
@@ -149,7 +149,7 @@
           </button>
 
           <a
-            href="https://docs.google.com/spreadsheets/d/1qyOUDSPjeDwM2D_djvob0SAJtbXAnu2KcxNCR4y9Twg/edit?usp=sharing"
+            href="YOUR_WEB_APP_URL_FOR_TABLE_VIEW"
             class="btn btn-secondary btn-lg w-100 mt-2 text-white"
             role="button"
             target="_blank"
@@ -188,8 +188,7 @@
               ✅ Yêu cầu đã được gửi thành công!
             </h4>
             <p>
-              Cảm ơn **<span id="requesterName" class="text-primary"></span>**,
-              hệ thống đã ghi nhận yêu cầu của Anh/Chị. Chúng tôi sẽ xử lý sớm
+              Hệ thống đã ghi nhận yêu cầu của Anh/Chị. Chúng tôi sẽ xử lý sớm
               nhất.
             </p>
           </div>
@@ -233,18 +232,14 @@
         document.getElementById("successModal")
       );
 
-      const requesterNameSpan = document.getElementById("requesterName");
-
       form.addEventListener("submit", function (e) {
         e.preventDefault();
 
-        // 🔥 THAY THẾ CHỖ NÀY BẰNG URL WEB APP CHÍNH THỨC CỦA BẠN
-        const scriptUrl = "API_URL_CUA_BAN";
+        // 🔥 THAY THẾ CHỖ NÀY BẰNG URL WEB APP CHÍNH THỨC CỦA BẠN (CÓ THỂ LÀ URL DÙNG CHO TABLE VIEW)
+        const scriptUrl =
+          "https://script.google.com/macros/s/AKfycbw1YzSf74s3JEOq4aMF2uKzXMmCSS1kyFdj49Yzvtfqi3-RvhvlLpxyJezwev0FbRb1pQ/exec";
 
         let dataToSubmit = new FormData(form);
-
-        // Lấy tên người yêu cầu TRƯỚC KHI reset form
-        const hoVaTenInput = document.getElementById("HoVaTen").value;
 
         const selectedNoiDung = document.getElementById("NoiDungSelect").value;
         const otherNoiDung = document.getElementById("NoiDungKhac").value;
@@ -264,7 +259,7 @@
         const payload = new FormData();
         payload.append("Ngày", dataToSubmit.get("Ngày"));
         payload.append("Nội dung", finalNoiDungValue);
-        payload.append("Họ và tên", hoVaTenInput); // Sử dụng tên đã lấy
+        payload.append("Họ và tên", dataToSubmit.get("Họ và tên"));
         payload.append("Nơi yêu cầu", dataToSubmit.get("Nơi yêu cầu"));
         payload.append("Tình trạng", dataToSubmit.get("Tình trạng"));
         payload.append("Ghi chú", dataToSubmit.get("Ghi chú"));
@@ -281,10 +276,6 @@
         })
           .then(() => {
             // Xử lý thành công
-
-            // 🔥 CHÈN HỌ VÀ TÊN VÀO MODAL TRƯỚC KHI HIỂN THỊ
-            requesterNameSpan.textContent = hoVaTenInput;
-
             successModal.show();
             form.reset();
             document.getElementById("NoiDungSelect").required = true;
@@ -301,4 +292,3 @@
     </script>
   </body>
 </html>
-
