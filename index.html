@@ -187,8 +187,11 @@
             <h4 class="text-success mb-3">Yêu cầu đã được gửi thành công!</h4>
             <p>
               Cảm ơn **<span id="requesterName" class="text-primary"></span>**,
-              hệ thống đã ghi nhận yêu cầu của Anh/Chị. Chúng tôi sẽ xử lý sớm
-              nhất.
+              hệ thống đã ghi nhận yêu cầu của Anh/Chị.
+              <br />
+              **Khoa phòng:**
+              <span id="requesterDept" class="text-info"></span>. Chúng tôi sẽ
+              xử lý sớm nhất.
             </p>
           </div>
           <div class="modal-footer">
@@ -232,11 +235,14 @@
       );
       const requesterNameSpan = document.getElementById("requesterName");
 
+      // 🔥 KHAI BÁO BIẾN CHO NƠI YÊU CẦU
+      const requesterDeptSpan = document.getElementById("requesterDept");
+
       form.addEventListener("submit", function (e) {
         e.preventDefault();
 
         // ***************************************************************
-        // 🔥 BƯỚC QUAN TRỌNG: THAY THẾ URL WEB APP CỦA BẠN TẠI ĐÂY
+        // VUI LÒNG ĐẢM BẢO URL NÀY CHÍNH XÁC
         const scriptUrl =
           "https://script.google.com/macros/s/AKfycbyFnJP_K0G8Z7eh2CljfljgzfXRzSZUB1uUTujXFwa14r2V-TSkbgSizon4rzsAkZCV/exec";
         // ***************************************************************
@@ -244,8 +250,9 @@
         // 1. Lấy dữ liệu thô
         let dataToSubmit = new FormData(form);
 
-        // Lấy tên trước khi xử lý payload
+        // Lấy tên và nơi yêu cầu trước khi xử lý payload
         const hoVaTenInput = dataToSubmit.get("Họ và tên");
+        const noiYeuCauInput = dataToSubmit.get("Nơi yêu cầu"); // 🔥 LẤY NƠI YÊU CẦU
 
         // 2. Xử lý trường 'Nội dung'
         const selectedNoiDung = document.getElementById("NoiDungSelect").value;
@@ -258,7 +265,6 @@
           finalNoiDungValue = otherNoiDung;
         }
 
-        // Gộp Nội dung chính và mô tả chi tiết (nếu có)
         if (moTaChiTiet) {
           finalNoiDungValue = finalNoiDungValue + " (" + moTaChiTiet + ")";
         }
@@ -266,9 +272,9 @@
         // 3. Tạo Payload cuối cùng để gửi đi
         const payload = new FormData();
         payload.append("Ngày", dataToSubmit.get("Ngày"));
-        payload.append("Nội dung", finalNoiDungValue); // Gửi giá trị đã xử lý/ghép
+        payload.append("Nội dung", finalNoiDungValue);
         payload.append("Họ và tên", hoVaTenInput);
-        payload.append("Nơi yêu cầu", dataToSubmit.get("Nơi yêu cầu"));
+        payload.append("Nơi yêu cầu", noiYeuCauInput); // Gửi giá trị đã lấy
         payload.append("Tình trạng", dataToSubmit.get("Tình trạng"));
         payload.append("Ghi chú", dataToSubmit.get("Ghi chú"));
 
@@ -292,6 +298,9 @@
             } else {
               requesterNameSpan.textContent = "Bạn";
             }
+
+            // 🔥 CẬP NHẬT NƠI YÊU CẦU VÀO MODAL
+            requesterDeptSpan.textContent = noiYeuCauInput || "Không xác định";
 
             successModal.show();
 
