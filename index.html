@@ -22,11 +22,11 @@
   <body>
     <div class="container">
       <div class="form-container">
-        <h2 class="mb-4 text-center text-info">📝 Form Yêu Cầu Dịch Vụ</h2>
+        <h2 class="mb-4 text-center text-info">Form Yêu Cầu</h2>
 
         <form id="requestForm">
           <div class="mb-3">
-            <label for="Ngay" class="form-label fw-bold">Ngày yêu cầu:</label>
+            <label for="Ngay" class="form-label fw-bold">Ngày:</label>
             <input
               type="date"
               class="form-control"
@@ -149,11 +149,11 @@
           </button>
 
           <a
-            href="YOUR_WEB_APP_URL_FOR_TABLE_VIEW"
-            class="btn btn-secondary btn-lg w-100 mt-2 text-white"
+            href="https://docs.google.com/spreadsheets/d/1qyOUDSPjeDwM2D_djvob0SAJtbXAnu2KcxNCR4y9Twg/edit?usp=sharing"
+            class="btn btn-danger btn-lg w-100 mt-2 text-white"
             role="button"
             target="_blank"
-            >Xem Danh Sách Yêu Cầu</a
+            >Xem thông tin đã nhập</a
           >
 
           <p
@@ -228,6 +228,7 @@
 
       const form = document.getElementById("requestForm");
       const message = document.getElementById("formMessage");
+      // Khai báo đối tượng Modal của Bootstrap
       const successModal = new bootstrap.Modal(
         document.getElementById("successModal")
       );
@@ -235,12 +236,16 @@
       form.addEventListener("submit", function (e) {
         e.preventDefault();
 
-        // 🔥 THAY THẾ CHỖ NÀY BẰNG URL WEB APP CHÍNH THỨC CỦA BẠN (CÓ THỂ LÀ URL DÙNG CHO TABLE VIEW)
+        // ***************************************************************
+        // 🔥 VUI LÒNG CẬP NHẬT URL NÀY BẰNG URL Google Apps Script ĐÃ TRIỂN KHAI CỦA BẠN
         const scriptUrl =
-          "https://script.google.com/macros/s/AKfycbw1YzSf74s3JEOq4aMF2uKzXMmCSS1kyFdj49Yzvtfqi3-RvhvlLpxyJezwev0FbRb1pQ/exec";
+          "https://script.google.com/macros/s/AKfycbyFnJP_K0G8Z7eh2CljfljgzfXRzSZUB1uUTujXFwa14r2V-TSkbgSizon4rzsAkZCV/exec";
+        // ***************************************************************
 
+        // 1. Lấy dữ liệu thô
         let dataToSubmit = new FormData(form);
 
+        // 2. Xử lý trường 'Nội dung' để chỉ gửi một giá trị duy nhất
         const selectedNoiDung = document.getElementById("NoiDungSelect").value;
         const otherNoiDung = document.getElementById("NoiDungKhac").value;
         const moTaChiTiet = dataToSubmit.get("Mô tả chi tiết");
@@ -251,20 +256,21 @@
           finalNoiDungValue = otherNoiDung;
         }
 
+        // Gộp Nội dung chính và mô tả chi tiết (nếu có)
         if (moTaChiTiet) {
           finalNoiDungValue = finalNoiDungValue + " (" + moTaChiTiet + ")";
         }
 
-        // Tạo Payload cuối cùng để gửi đi
+        // 3. Tạo Payload cuối cùng để gửi đi
         const payload = new FormData();
         payload.append("Ngày", dataToSubmit.get("Ngày"));
-        payload.append("Nội dung", finalNoiDungValue);
+        payload.append("Nội dung", finalNoiDungValue); // Gửi giá trị đã xử lý/ghép
         payload.append("Họ và tên", dataToSubmit.get("Họ và tên"));
         payload.append("Nơi yêu cầu", dataToSubmit.get("Nơi yêu cầu"));
-        payload.append("Tình trạng", dataToSubmit.get("Tình trạng"));
+        payload.append("Tình trạng", dataToSubmit.get("Tình trạng")); // Lấy giá trị ẩn
         payload.append("Ghi chú", dataToSubmit.get("Ghi chú"));
 
-        // Gửi dữ liệu bằng Fetch API
+        // 4. Gửi dữ liệu bằng Fetch API
         fetch(scriptUrl, {
           method: "POST",
           mode: "no-cors",
@@ -275,13 +281,16 @@
           body: new URLSearchParams(payload),
         })
           .then(() => {
-            // Xử lý thành công
+            // Xử lý thành công: Kích hoạt Modal
             successModal.show();
+
+            // Reset form và trạng thái input
             form.reset();
             document.getElementById("NoiDungSelect").required = true;
             toggleOtherContent("");
           })
           .catch((error) => {
+            // Xử lý lỗi
             console.error("Lỗi khi gửi dữ liệu:", error);
             message.textContent = "❌ Đã xảy ra lỗi khi gửi. Vui lòng thử lại.";
             message.classList.remove("text-success");
