@@ -22,11 +22,11 @@
   <body>
     <div class="container">
       <div class="form-container">
-        <h2 class="mb-4 text-center text-info">Form Yêu Cầu</h2>
+        <h2 class="mb-4 text-center text-info">📝 Form Yêu Cầu Dịch Vụ</h2>
 
         <form id="requestForm">
           <div class="mb-3">
-            <label for="Ngay" class="form-label fw-bold">Ngày:</label>
+            <label for="Ngay" class="form-label fw-bold">Ngày yêu cầu:</label>
             <input
               type="date"
               class="form-control"
@@ -149,11 +149,11 @@
           </button>
 
           <a
-            href="https://docs.google.com/spreadsheets/d/1qyOUDSPjeDwM2D_djvob0SAJtbXAnu2KcxNCR4y9Twg/edit?usp=sharing"
-            class="btn btn-danger btn-lg w-100 mt-2 text-white"
+            href="YOUR_WEB_APP_URL_FOR_TABLE_VIEW"
+            class="btn btn-secondary btn-lg w-100 mt-2 text-white"
             role="button"
             target="_blank"
-            >Xem thông tin đã nhập</a
+            >Xem Danh Sách Yêu Cầu</a
           >
 
           <p
@@ -175,7 +175,7 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header bg-success text-white">
-            <h5 class="modal-title" id="successModalLabel">Thành Công! </h5>
+            <h5 class="modal-title" id="successModalLabel">Thành Công! 🎉</h5>
             <button
               type="button"
               class="btn-close btn-close-white"
@@ -185,10 +185,11 @@
           </div>
           <div class="modal-body text-center">
             <h4 class="text-success mb-3">
-              Yêu cầu đã được gửi thành công!
+              ✅ Yêu cầu đã được gửi thành công!
             </h4>
             <p>
-              Hệ thống đã ghi nhận yêu cầu của Anh/Chị. Chúng tôi sẽ xử lý sớm
+              Cảm ơn **<span id="requesterName" class="text-primary"></span>**,
+              hệ thống đã ghi nhận yêu cầu của Anh/Chị. Chúng tôi sẽ xử lý sớm
               nhất.
             </p>
           </div>
@@ -228,24 +229,23 @@
 
       const form = document.getElementById("requestForm");
       const message = document.getElementById("formMessage");
-      // Khai báo đối tượng Modal của Bootstrap
       const successModal = new bootstrap.Modal(
         document.getElementById("successModal")
       );
 
+      const requesterNameSpan = document.getElementById("requesterName");
+
       form.addEventListener("submit", function (e) {
         e.preventDefault();
 
-        // ***************************************************************
-        // 🔥 VUI LÒNG CẬP NHẬT URL NÀY BẰNG URL Google Apps Script ĐÃ TRIỂN KHAI CỦA BẠN
-        const scriptUrl =
-          "https://script.google.com/macros/s/AKfycbyFnJP_K0G8Z7eh2CljfljgzfXRzSZUB1uUTujXFwa14r2V-TSkbgSizon4rzsAkZCV/exec";
-        // ***************************************************************
+        // 🔥 THAY THẾ CHỖ NÀY BẰNG URL WEB APP CHÍNH THỨC CỦA BẠN
+        const scriptUrl = "API_URL_CUA_BAN";
 
-        // 1. Lấy dữ liệu thô
         let dataToSubmit = new FormData(form);
 
-        // 2. Xử lý trường 'Nội dung' để chỉ gửi một giá trị duy nhất
+        // Lấy tên người yêu cầu TRƯỚC KHI reset form
+        const hoVaTenInput = document.getElementById("HoVaTen").value;
+
         const selectedNoiDung = document.getElementById("NoiDungSelect").value;
         const otherNoiDung = document.getElementById("NoiDungKhac").value;
         const moTaChiTiet = dataToSubmit.get("Mô tả chi tiết");
@@ -256,21 +256,20 @@
           finalNoiDungValue = otherNoiDung;
         }
 
-        // Gộp Nội dung chính và mô tả chi tiết (nếu có)
         if (moTaChiTiet) {
           finalNoiDungValue = finalNoiDungValue + " (" + moTaChiTiet + ")";
         }
 
-        // 3. Tạo Payload cuối cùng để gửi đi
+        // Tạo Payload cuối cùng để gửi đi
         const payload = new FormData();
         payload.append("Ngày", dataToSubmit.get("Ngày"));
-        payload.append("Nội dung", finalNoiDungValue); // Gửi giá trị đã xử lý/ghép
-        payload.append("Họ và tên", dataToSubmit.get("Họ và tên"));
+        payload.append("Nội dung", finalNoiDungValue);
+        payload.append("Họ và tên", hoVaTenInput); // Sử dụng tên đã lấy
         payload.append("Nơi yêu cầu", dataToSubmit.get("Nơi yêu cầu"));
-        payload.append("Tình trạng", dataToSubmit.get("Tình trạng")); // Lấy giá trị ẩn
+        payload.append("Tình trạng", dataToSubmit.get("Tình trạng"));
         payload.append("Ghi chú", dataToSubmit.get("Ghi chú"));
 
-        // 4. Gửi dữ liệu bằng Fetch API
+        // Gửi dữ liệu bằng Fetch API
         fetch(scriptUrl, {
           method: "POST",
           mode: "no-cors",
@@ -281,16 +280,17 @@
           body: new URLSearchParams(payload),
         })
           .then(() => {
-            // Xử lý thành công: Kích hoạt Modal
-            successModal.show();
+            // Xử lý thành công
 
-            // Reset form và trạng thái input
+            // 🔥 CHÈN HỌ VÀ TÊN VÀO MODAL TRƯỚC KHI HIỂN THỊ
+            requesterNameSpan.textContent = hoVaTenInput;
+
+            successModal.show();
             form.reset();
             document.getElementById("NoiDungSelect").required = true;
             toggleOtherContent("");
           })
           .catch((error) => {
-            // Xử lý lỗi
             console.error("Lỗi khi gửi dữ liệu:", error);
             message.textContent = "❌ Đã xảy ra lỗi khi gửi. Vui lòng thử lại.";
             message.classList.remove("text-success");
@@ -301,4 +301,3 @@
     </script>
   </body>
 </html>
-
