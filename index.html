@@ -22,11 +22,11 @@
   <body>
     <div class="container">
       <div class="form-container">
-        <h2 class="mb-4 text-center text-info">Form Yêu Cầu</h2>
+        <h2 class="mb-4 text-center text-info">📝 Form Yêu Cầu Dịch Vụ</h2>
 
         <form id="requestForm">
           <div class="mb-3">
-            <label for="Ngay" class="form-label fw-bold">Ngày:</label>
+            <label for="Ngay" class="form-label fw-bold">Ngày yêu cầu:</label>
             <input
               type="date"
               class="form-control"
@@ -38,7 +38,7 @@
 
           <div class="mb-3">
             <label for="NoiDungSelect" class="form-label fw-bold"
-              >Nội dung:</label
+              >Nội dung yêu cầu:</label
             >
             <select
               class="form-select"
@@ -95,7 +95,7 @@
 
           <div class="mb-3">
             <label for="NoiYeuCau" class="form-label fw-bold"
-              >Khoa, Phòng/Nơi yêu cầu:</label
+              >Phòng ban/Nơi yêu cầu:</label
             >
             <select
               class="form-select"
@@ -105,30 +105,16 @@
             >
               <option value="">-- Chọn phòng ban --</option>
               <option value="TYTP Bình Thới">TYTP Bình Thới</option>
-              <option value="TYTP Bình Thới - Điểm y tế 1">
-                TYTP Bình Thới - Điểm y tế 1
-              </option>
-              <option value="TYTP Bình Thới - Điểm y tế 2">
-                TYTP Bình Thới - Điểm y tế 2
-              </option>
+              <option value="TYTP Bình Thới - Điểm y tế 1">TYTP Bình Thới - Điểm y tế 1</option>
+              <option value="TYTP Bình Thới - Điểm y tế 2">TYTP Bình Thới - Điểm y tế 2</option>
               <option value="TYTP Phú Thọ">TYTP Phú Thọ</option>
-              <option value="TYTP Phú Thọ - Điểm y tế 1">
-                TYTP Phú Thọ - Điểm y tế 1
-              </option>
-              <option value="TYTP Phú Thọ - Điểm y tế 2">
-                TYTP Phú Thọ - Điểm y tế 2
-              </option>
+              <option value="TYTP Phú Thọ - Điểm y tế 1">TYTP Phú Thọ - Điểm y tế 1</option>
+              <option value="TYTP Phú Thọ - Điểm y tế 2">TYTP Phú Thọ - Điểm y tế 2</option>
               <option value="TYTP Hòa Bình">TYTP Hòa Bình</option>
-              <option value="TYTP Hòa Bình - Điểm y tế 1">
-                TYTP Hòa Bình - Điểm y tế 1
-              </option>
+              <option value="TYTP Hòa Bình - Điểm y tế 1">TYTP Hòa Bình - Điểm y tế 1</option>
               <option value="TYTP Minh Phụng">TYTP Minh Phụng</option>
-              <option value="TYTP Minh Phụng - Điểm y tế 1">
-                TYTP Minh Phụng - Điểm y tế 1
-              </option>
-              <option value="TYTP Minh Phụng - Điểm y tế 2">
-                TYTP Minh Phụng - Điểm y tế 2
-              </option>
+              <option value="TYTP Minh Phụng - Điểm y tế 1">TYTP Minh Phụng - Điểm y tế 1</option>
+              <option value="TYTP Minh Phụng - Điểm y tế 2">TYTP Minh Phụng - Điểm y tế 2</option>
             </select>
           </div>
 
@@ -147,7 +133,7 @@
           <button type="submit" class="btn btn-primary btn-lg w-100">
             Gửi Yêu Cầu
           </button>
-
+          
           <a
             href="https://docs.google.com/spreadsheets/d/1qyOUDSPjeDwM2D_djvob0SAJtbXAnu2KcxNCR4y9Twg/edit?usp=sharing"
             class="btn btn-danger btn-lg w-100 mt-2 text-white"
@@ -155,7 +141,7 @@
             target="_blank"
             >Xem thông tin đã nhập</a
           >
-
+          
           <p
             class="message mt-3 text-center"
             id="formMessage"
@@ -164,7 +150,7 @@
         </form>
       </div>
     </div>
-
+    
     <div
       class="modal fade"
       id="successModal"
@@ -174,8 +160,8 @@
     >
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-          <div class="modal-header bg-primary text-white">
-            <h5 class="modal-title" id="successModalLabel">Thông báo</h5>
+          <div class="modal-header bg-success text-white">
+            <h5 class="modal-title" id="successModalLabel">Thành Công! 🎉</h5>
             <button
               type="button"
               class="btn-close btn-close-white"
@@ -184,12 +170,12 @@
             ></button>
           </div>
           <div class="modal-body text-center">
-            <h4 class="text-success mb-3">Yêu cầu đã được gửi thành công!</h4>
+            <h4 class="text-success mb-3">✅ Yêu cầu đã được gửi thành công!</h4>
             <p>
-              Cảm ơn **<span id="requesterName" class="text-primary"></span>**,
-              **Nơi yêu cầu:**
-              <span id="requesterDept" class="text-info"></span> hệ thống đã ghi
-              nhận yêu cầu của Anh/Chị. Chúng tôi sẽ xử lý sớm nhất.
+              Cảm ơn **<span id="requesterName" class="text-primary"></span>**, hệ thống đã ghi nhận yêu cầu của Anh/Chị.
+              <br>
+              **Khoa phòng:** <span id="requesterDept" class="text-info"></span>.
+              Chúng tôi sẽ xử lý sớm nhất.
             </p>
           </div>
           <div class="modal-footer">
@@ -232,15 +218,13 @@
         document.getElementById("successModal")
       );
       const requesterNameSpan = document.getElementById("requesterName");
-
-      // 🔥 KHAI BÁO BIẾN CHO NƠI YÊU CẦU
       const requesterDeptSpan = document.getElementById("requesterDept");
 
       form.addEventListener("submit", function (e) {
         e.preventDefault();
 
         // ***************************************************************
-        // VUI LÒNG ĐẢM BẢO URL NÀY CHÍNH XÁC
+        // 🔥 BƯỚC QUAN TRỌNG: THAY THẾ URL WEB APP CỦA BẠN TẠI ĐÂY
         const scriptUrl =
           "https://script.google.com/macros/s/AKfycbyFnJP_K0G8Z7eh2CljfljgzfXRzSZUB1uUTujXFwa14r2V-TSkbgSizon4rzsAkZCV/exec";
         // ***************************************************************
@@ -249,8 +233,8 @@
         let dataToSubmit = new FormData(form);
 
         // Lấy tên và nơi yêu cầu trước khi xử lý payload
-        const hoVaTenInput = dataToSubmit.get("Họ và tên");
-        const noiYeuCauInput = dataToSubmit.get("Nơi yêu cầu"); // 🔥 LẤY NƠI YÊU CẦU
+        const hoVaTenInput = dataToSubmit.get("Họ và tên"); 
+        const noiYeuCauInput = dataToSubmit.get("Nơi yêu cầu"); 
 
         // 2. Xử lý trường 'Nội dung'
         const selectedNoiDung = document.getElementById("NoiDungSelect").value;
@@ -270,10 +254,10 @@
         // 3. Tạo Payload cuối cùng để gửi đi
         const payload = new FormData();
         payload.append("Ngày", dataToSubmit.get("Ngày"));
-        payload.append("Nội dung", finalNoiDungValue);
+        payload.append("Nội dung", finalNoiDungValue); 
         payload.append("Họ và tên", hoVaTenInput);
-        payload.append("Nơi yêu cầu", noiYeuCauInput); // Gửi giá trị đã lấy
-        payload.append("Tình trạng", dataToSubmit.get("Tình trạng"));
+        payload.append("Nơi yêu cầu", noiYeuCauInput);
+        payload.append("Tình trạng", dataToSubmit.get("Tình trạng")); 
         payload.append("Ghi chú", dataToSubmit.get("Ghi chú"));
 
         // Vô hiệu hóa nút gửi để tránh gửi lặp
@@ -292,14 +276,13 @@
           .then(() => {
             // Xử lý thành công: Cập nhật Tên và Kích hoạt Modal
             if (hoVaTenInput && hoVaTenInput.trim() !== "") {
-              requesterNameSpan.textContent = hoVaTenInput;
+                requesterNameSpan.textContent = hoVaTenInput;
             } else {
-              requesterNameSpan.textContent = "Bạn";
+                requesterNameSpan.textContent = "Bạn";
             }
-
-            // 🔥 CẬP NHẬT NƠI YÊU CẦU VÀO MODAL
-            requesterDeptSpan.textContent = noiYeuCauInput || "Không xác định";
-
+            
+            requesterDeptSpan.textContent = noiYeuCauInput || "Không xác định"; 
+                
             successModal.show();
 
             // Reset form và trạng thái input
@@ -315,8 +298,8 @@
             message.style.display = "block";
           })
           .finally(() => {
-            // Kích hoạt lại nút gửi
-            document.querySelector('button[type="submit"]').disabled = false;
+             // Kích hoạt lại nút gửi
+             document.querySelector('button[type="submit"]').disabled = false;
           });
       });
     </script>
